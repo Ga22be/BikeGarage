@@ -22,7 +22,7 @@ public class RegisterButton extends JButton implements ActionListener{
 		this.main = main;
 		addActionListener(this); 
 		setPreferredSize(new Dimension(BikeGarageGUI.WIDTH / 3 - BikeGarageGUI.VERTICAL_PADDING, BikeGarageGUI.HEIGHT / 3 / 3 - BikeGarageGUI.HORIZONTAL_PADDING));
-		setFont(new Font(getFont().getName(), Font.BOLD, 40));
+		setFont(new Font(getFont().getName(), Font.BOLD, 38));
 	}
 
 	@Override
@@ -32,14 +32,14 @@ public class RegisterButton extends JButton implements ActionListener{
 		if(socSecNum == null || socSecNum.isEmpty()){
 			// Do nothing
 		} else if(!socSecNum.equals(testNum)){
-			switch (JOptionPane.showConfirmDialog(null, "Är du säker på att du vill registrera en ny användare?")) {
+			switch (JOptionPane.showConfirmDialog(null, "ï¿½r du sï¿½ker pï¿½ att du vill registrera en ny anvï¿½ndare?")) {
 			case JOptionPane.YES_OPTION:
-				System.out.println("Registrera Användare");
+				System.out.println("Registrera Anvï¿½ndare");
 //				cl.show(main.getUIPane(), BikeGarageGUI.REGOWNERPANE);
 				RegisterOwnerUI regOwner = new RegisterOwnerUI(main, socSecNum);
 				switch(JOptionPane.showConfirmDialog(null, regOwner, "Indata", JOptionPane.OK_CANCEL_OPTION)){
 				case JOptionPane.OK_OPTION:
-					System.out.println("Indata bekräftad");
+					System.out.println("Indata bekrï¿½ftad");
 					regOwner.addInDatabase();
 					break;
 				case JOptionPane.CANCEL_OPTION:

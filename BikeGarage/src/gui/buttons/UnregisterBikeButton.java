@@ -15,7 +15,7 @@ public class UnregisterBikeButton extends JButton implements ActionListener{
 		super("<html><center> Avregistrera<br/>Cykel </center></html>");
 		addActionListener(this);
 		setPreferredSize(new Dimension(BikeGarageGUI.WIDTH / 3 / 2 - 6, BikeGarageGUI.HEIGHT / 3 / 3 - BikeGarageGUI.HORIZONTAL_PADDING));
-		setFont(new Font(getFont().getName(), Font.BOLD, 16));
+		setFont(new Font(getFont().getName(), Font.BOLD, 14));
 	}
 
 	@Override
