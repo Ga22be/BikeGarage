@@ -27,7 +27,7 @@ public class RegisterButton extends JButton implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String socSecNum = JOptionPane.showInputDialog("Ange perssonnummer");
+		String socSecNum = JOptionPane.showInputDialog(null, "Ange perssonnummer", "Personnummer", JOptionPane.PLAIN_MESSAGE);
 		CardLayout cl = (CardLayout)main.getUIPane().getLayout();
 		if(socSecNum == null || socSecNum.isEmpty()){
 			// Do nothing
@@ -37,7 +37,7 @@ public class RegisterButton extends JButton implements ActionListener{
 				System.out.println("Registrera Användare");
 //				cl.show(main.getUIPane(), BikeGarageGUI.REGOWNERPANE);
 				RegisterOwnerUI regOwner = new RegisterOwnerUI(main, socSecNum);
-				switch(JOptionPane.showConfirmDialog(null, regOwner, "Indata", JOptionPane.OK_CANCEL_OPTION)){
+				switch(JOptionPane.showConfirmDialog(null, regOwner, "Indata", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null)){
 				case JOptionPane.OK_OPTION:
 					System.out.println("Indata bekräftad");
 					regOwner.addInDatabase();

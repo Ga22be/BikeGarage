@@ -36,15 +36,16 @@ public class BikeGarageGUI extends JFrame{
 	public BikeGarageGUI(){
 		super("BikeGarage");
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		setLocationRelativeTo( null );
+//		setLocationRelativeTo(null);
 		setSize(WIDTH, HEIGHT);
 		setResizable(false);		
 		setLayout(new BorderLayout());
-//		try {
+		try {
 //		    UIManager.setLookAndFeel("com.seaglasslookandfeel.SeaGlassLookAndFeel");
-//		} catch (Exception e) {
-//		    e.printStackTrace();
-//		}
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
 		
 		
 		menu = new MainMenu(this);

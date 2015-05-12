@@ -25,7 +25,7 @@ public class MainMenu extends JPanel {
 //		centerPanel.setBackground(Color.RED); // DEBUG SETTING
 		
 		centerPanel.add(new RegisterButton(main));
-		centerPanel.add(new UserHandlerButton());
+		centerPanel.add(new UserHandlerButton(main));
 		centerPanel.add(new UnregisterOwnerButton());
 		centerPanel.add(new UnregisterBikeButton());
 		
