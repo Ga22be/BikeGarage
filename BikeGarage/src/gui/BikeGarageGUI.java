@@ -7,6 +7,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
 
 import javax.swing.*;
 
@@ -22,6 +23,11 @@ public class BikeGarageGUI extends JFrame{
 	public static final String HANDLERPANE = "handler";
 	public static final String UNREGOWNERPANE = "unregOwner";
 	public static final String UNREGBIKEPANE = "unregBike";
+	
+	public static final Font HFONT = new Font(null, Font.BOLD, 22);
+	public static final Font TFONT = new Font("Monospaced", Font.BOLD, 16);
+	public static final Font LFONT = new Font(null, Font.BOLD, 16);
+	
 	
 	private MainMenu menu;
 	private RegisterOwnerUI regOwnerUI;
