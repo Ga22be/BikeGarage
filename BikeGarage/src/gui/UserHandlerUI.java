@@ -11,10 +11,15 @@ import javax.swing.*;
 
 public class UserHandlerUI extends JPanel {
 	private BikeGarageGUI main;
+	
+	//Search
 	private JPanel searchPanel;
 	private JTextField searchField;
 	private JButton searchButton;
+	
+	//Result
 	private JPanel resutlBoxPanel;
+//	private;
 	
 	public UserHandlerUI(BikeGarageGUI main){
 		this.main = main;
@@ -32,7 +37,6 @@ public class UserHandlerUI extends JPanel {
 	}
 	
 	public void makeSearchPanel(){
-//		JPanel searchPanel = new JPanel();
 		searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		searchField = new JTextField("Ange sökterm...");
 		searchField.setColumns(20);
@@ -45,7 +49,6 @@ public class UserHandlerUI extends JPanel {
 		searchButton = new JButton("Sök");
 		searchPanel.add(searchField);
 		searchPanel.add(searchButton);
-//		return searchPanel;
 	}
 	
 	public void makeResultPanel(){
