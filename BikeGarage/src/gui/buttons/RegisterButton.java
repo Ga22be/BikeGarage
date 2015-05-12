@@ -39,8 +39,13 @@ public class RegisterButton extends JButton implements ActionListener{
 				RegisterOwnerUI regOwner = new RegisterOwnerUI(main, socSecNum);
 				switch(JOptionPane.showConfirmDialog(null, regOwner, "Indata", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null)){
 				case JOptionPane.OK_OPTION:
-					System.out.println("Indata bekräftad");
-					regOwner.addInDatabase();
+					main.printMessage("Indata bekräftad");
+//					System.out.println("Indata bekräftad");
+					try {
+						regOwner.addInDatabase();
+					} catch (IllegalArgumentException e1) {
+						main.printErrorMessage("Vänligen fyll i alla personuppgifter och försök igen!");
+					}
 					break;
 				case JOptionPane.CANCEL_OPTION:
 					break;

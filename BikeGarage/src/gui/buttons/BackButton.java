@@ -21,6 +21,7 @@ public class BackButton extends JButton implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		CardLayout cl = (CardLayout)main.getUIPane().getLayout();
 		System.out.println("Tillbaka");
+		main.printMessage("INFO GOES HERE");
 		cl.show(main.getUIPane(), BikeGarageGUI.MENUPANE);		
 	}
 	

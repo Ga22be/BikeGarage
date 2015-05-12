@@ -18,8 +18,10 @@ public class UserHandlerUI extends JPanel {
 	private JButton searchButton;
 	
 	//Result
-	private JPanel resutlBoxPanel;
-//	private;
+	private JPanel resultPanel;
+	private JTextArea userInfoArea;
+	private JScrollPane userScroll;
+//	private 
 	
 	public UserHandlerUI(BikeGarageGUI main){
 		this.main = main;
@@ -32,7 +34,8 @@ public class UserHandlerUI extends JPanel {
 		add(searchPanel, BorderLayout.NORTH);
 		
 		//ResultPanel
-		
+		makeResultPanel();
+		add(resultPanel, BorderLayout.WEST);
 		
 	}
 	
@@ -52,7 +55,17 @@ public class UserHandlerUI extends JPanel {
 	}
 	
 	public void makeResultPanel(){
-		JTextPane resultField = new JTextPane();
+		resultPanel = new JPanel();
+		resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.Y_AXIS));
+		resultPanel.add(new JLabel("Personinformation"));
+		userInfoArea = new JTextArea(0, 60);
+		userScroll = new JScrollPane(userInfoArea);
+		userScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		resultPanel.add(userScroll);
+		resultPanel.add(Box.createVerticalStrut(10));
+		
+		
+		
 		
 	}
 }

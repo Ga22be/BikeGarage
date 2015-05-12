@@ -5,6 +5,7 @@ import gui.buttons.ShutDownButton;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 
 import javax.swing.*;
@@ -83,6 +84,19 @@ public class BikeGarageGUI extends JFrame{
 	
 	public JPanel getUIPane(){
 		return uiPane;
+	}
+
+	private void printMessage(String mes, Color col){
+		infoBox.setForeground(col);
+		infoBox.setText(mes);
+	}
+	
+	public void printMessage(String mes){
+		printMessage(mes, Color.BLACK);
+	}
+	
+	public void printErrorMessage(String mes){
+		printMessage(mes, Color.RED);
 	}
 
 }
