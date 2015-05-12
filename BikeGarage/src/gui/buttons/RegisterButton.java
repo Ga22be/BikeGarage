@@ -32,14 +32,14 @@ public class RegisterButton extends JButton implements ActionListener{
 		if(socSecNum == null || socSecNum.isEmpty()){
 			// Do nothing
 		} else if(!socSecNum.equals(testNum)){
-			switch (JOptionPane.showConfirmDialog(null, "ï¿½r du sï¿½ker pï¿½ att du vill registrera en ny anvï¿½ndare?")) {
+			switch (JOptionPane.showConfirmDialog(null, "Är du säker på att du vill registrera en ny användare?")) {
 			case JOptionPane.YES_OPTION:
-				System.out.println("Registrera Anvï¿½ndare");
+				System.out.println("Registrera Användare");
 //				cl.show(main.getUIPane(), BikeGarageGUI.REGOWNERPANE);
 				RegisterOwnerUI regOwner = new RegisterOwnerUI(main, socSecNum);
 				switch(JOptionPane.showConfirmDialog(null, regOwner, "Indata", JOptionPane.OK_CANCEL_OPTION)){
 				case JOptionPane.OK_OPTION:
-					System.out.println("Indata bekrï¿½ftad");
+					System.out.println("Indata bekräftad");
 					regOwner.addInDatabase();
 					break;
 				case JOptionPane.CANCEL_OPTION:

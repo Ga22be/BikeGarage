@@ -12,7 +12,7 @@ import javax.swing.JButton;
 public class UserHandlerButton extends JButton implements ActionListener{
 	
 	public UserHandlerButton(){
-		super("Hantera Anvï¿½ndare");
+		super("Hantera Användare");
 		addActionListener(this);
 		setPreferredSize(new Dimension(BikeGarageGUI.WIDTH / 3 - BikeGarageGUI.VERTICAL_PADDING, BikeGarageGUI.HEIGHT / 3 / 3 - BikeGarageGUI.HORIZONTAL_PADDING));
 		setFont(new Font(getFont().getName(), Font.BOLD, 19));
