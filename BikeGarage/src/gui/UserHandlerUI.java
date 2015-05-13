@@ -3,6 +3,7 @@ package gui;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -12,7 +13,7 @@ import javax.swing.event.ListSelectionListener;
 
 public class UserHandlerUI extends JPanel{
 	private BikeGarageGUI main;
-	private Set<String[]> names = new Set<String[]>();
+	private List<String[]> owners;
 	private String[] person;
 	private int currentOwner;
 	
@@ -45,8 +46,8 @@ public class UserHandlerUI extends JPanel{
 	private JButton unregiserBikeButton;
 	
 	//TEMP
-	private String[] person1 = {"Lores Ipsum", "19920413-4423", "Lores.Ipsum@domain.se", "Aktiverad", "12345", "Inne", "54321", "Ute"};
-	private String[] person2 = {"Ipsum Lores", "19960824-5648", "Ipsum.Lores@domain.se", "Avaktiverad", "56789", "Ute", "98765", "Inne"};
+	private String[] person1 = {"Lores Ipsum", "199204134423", "Lores.Ipsum@domain.se", "Aktiverad", "12345", "Inne", "54321", "Ute"};
+	private String[] person2 = {"Ipsum Lores", "199608245648", "Ipsum.Lores@domain.se", "Avaktiverad", "56789", "Ute", "98765", "Inne"};
 	private Object[] personer = {person1, person2};
 	
 
@@ -54,6 +55,8 @@ public class UserHandlerUI extends JPanel{
 		this.main = main;
 		setLayout(new BorderLayout());
 		currentOwner = 0;
+		owners = new ArrayList<String[]>();
+		
 		
 		setBackground(Color.GREEN); //DEBUG SETTTING
 		
@@ -64,6 +67,7 @@ public class UserHandlerUI extends JPanel{
 		//Users panel
 		makeOwnersPanel();
 		add(ownersPanel, BorderLayout.CENTER);
+		setOwners();
 		
 		//Personal panel
 		makePersonalPanel();
@@ -111,7 +115,7 @@ public class UserHandlerUI extends JPanel{
 		ownersList.setFont(BikeGarageGUI.LFONT);
 		
 		ownerScroll = new JScrollPane(ownersList);
-		JLabel scrollHeader = new JLabel(String.format("%-19s %s", "Namn", "Personnummer"));
+		JLabel scrollHeader = new JLabel(String.format("%-20s %s", "Namn", "Personnummer"));
 		scrollHeader.setFont(new Font(null, Font.BOLD, 18));
 		scrollHeader.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 		ownerScroll.setColumnHeaderView(scrollHeader);
@@ -131,10 +135,11 @@ public class UserHandlerUI extends JPanel{
 		personalPanel.add(new JLabel("Personinformation"));
 		personalPanel.getComponent(0).setFont(BikeGarageGUI.HFONT);;
 		
-		userInfoArea = new JTextArea(7, 46);
+		userInfoArea = new JTextArea(7, 45);
 		System.out.println(userInfoArea.getFont().getName());
 		System.out.println(userInfoArea.getFont().getStyle());
 		userInfoArea.setFont(BikeGarageGUI.TFONT);
+		userInfoArea.setEditable(false);
 		userScroll = new JScrollPane(userInfoArea);
 		userScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		personalPanel.add(userScroll);		
@@ -188,10 +193,30 @@ public class UserHandlerUI extends JPanel{
 	}
 	
 	private void setOwners(){
+		//TODO Run getNames() in DB
+		Set<String> namesTEMP = new TreeSet<String>(); //Returned from DB
+		namesTEMP.add("Lores Ipsum-199204134423");
+		namesTEMP.add("Ipsum Lores-199608245648");
+		
+		List<String> names = new LinkedList<String>();
+		names.addAll(namesTEMP);
+		
+		
+		ownersListModel.removeAllElements();
+		Iterator<String> itr = names.iterator();
+		while(itr.hasNext()){
+			String[] temp = itr.next().split("-");
+			for(int i = 0; i < 2; i++){
+				System.out.print(temp[i] + ", ");
+			}
+			System.out.println();
+			owners.add(temp);
+			ownersListModel.addElement(String.format("%-20s %s", temp[0], temp[1]));
+		}
 		
 	}
 
-	public class bikeListListener implements ListSelectionListener{
+	private class bikeListListener implements ListSelectionListener{
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			 if (e.getValueIsAdjusting() == false) {
@@ -208,21 +233,21 @@ public class UserHandlerUI extends JPanel{
 		}		
 	}
 
-	public class SearchListener implements ActionListener{
+	private class SearchListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			//TODO Add connection to DB
 		}		
 	}
 	
-	public class ShowAllListener implements ActionListener{
+	private class ShowAllListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			//TODO Make method for adding all names in database
 		}
 	}
 	
-	public class RefreshListener implements ActionListener{
+	private class RefreshListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			//TODO Add connection to DB
@@ -231,7 +256,7 @@ public class UserHandlerUI extends JPanel{
 	}
 	
 	
-	public class UnregisterBikeListener implements ActionListener{
+	private class UnregisterBikeListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			int index = bikeList.getSelectedIndex();
@@ -242,6 +267,10 @@ public class UserHandlerUI extends JPanel{
 			//TODO Add get owner again!
 //			setUserInfo(currentUser%2);
 		}
+	}
+	
+	private String[] split(String info){
+		return info.split("-");
 	}
 	
 }
