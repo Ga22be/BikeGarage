@@ -16,6 +16,7 @@ public class UnregisterOwnerButton extends JButton implements ActionListener{
 		addActionListener(this);
 		setPreferredSize(new Dimension(BikeGarageGUI.WIDTH / 3 / 2 - 6, BikeGarageGUI.HEIGHT / 3 / 3 - BikeGarageGUI.HORIZONTAL_PADDING));
 		setFont(new Font(getFont().getName(), Font.BOLD, 14));
+		setEnabled(false);
 	}
 
 	@Override

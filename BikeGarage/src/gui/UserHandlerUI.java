@@ -251,7 +251,6 @@ public class UserHandlerUI extends JPanel{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			//TODO Add connection to DB
-			setUserInfo(++currentOwner%2);
 		}
 	}
 	
