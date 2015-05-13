@@ -46,9 +46,10 @@ public class UserHandlerUI extends JPanel{
 	private JButton unregiserBikeButton;
 	
 	//TEMP
-	private String[] person1 = {"Lores Ipsum", "199204134423", "Lores.Ipsum@domain.se", "Aktiverad", "12345", "Inne", "54321", "Ute"};
-	private String[] person2 = {"Ipsum Lores", "199608245648", "Ipsum.Lores@domain.se", "Avaktiverad", "56789", "Ute", "98765", "Inne"};
-	private Object[] personer = {person1, person2};
+	private String[] person1 = {"Ipsum Lores", "199608245648", "Ipsum.Lores@domain.se", "Avaktiverad", "56789", "Ute", "98765", "Inne"};
+	private String[] person2 = {"Lores Ipsum", "199204134423", "Lores.Ipsum@domain.se", "Aktiverad", "12345", "Inne", "54321", "Ute"};
+	private String[] person3 = {"", "", "", "", "", "", "", ""};
+	private Object[] personer = {person1, person2, person3};
 	
 
 	public UserHandlerUI(BikeGarageGUI main){
@@ -72,7 +73,6 @@ public class UserHandlerUI extends JPanel{
 		//Personal panel
 		makePersonalPanel();
 		add(personalPanel, BorderLayout.EAST);
-		setUserInfo(currentOwner);	
 	}
 	
 	/**
@@ -111,7 +111,7 @@ public class UserHandlerUI extends JPanel{
 		ownersList = new JList<String>(ownersListModel);
 		ownersList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		ownersList.setSelectedIndex(0);
-		ownersList.addListSelectionListener(new bikeListListener());
+		ownersList.addListSelectionListener(new ownerListListener());
 		ownersList.setFont(BikeGarageGUI.LFONT);
 		
 		ownerScroll = new JScrollPane(ownersList);
@@ -181,7 +181,7 @@ public class UserHandlerUI extends JPanel{
 		int counter = 0;
 		userInfoArea.setText("");
 		userInfoArea.append(String.format("%-20s %s %n", "Namn: ", person[counter++]));
-		userInfoArea.append(String.format("%-20s %s %n", "Personnummer: ", person[counter++]));
+		userInfoArea.append(String.format("%-20s %s %n", "Personnummer: ", addSeparator(person[counter++])));
 		userInfoArea.append(String.format("%-20s %s %n %n %n", "Mail: ", person[counter++]));
 		userInfoArea.append(String.format("%-20s %s %n", "Tillgångstid: ", person[counter++]));
 		
@@ -269,8 +269,25 @@ public class UserHandlerUI extends JPanel{
 		}
 	}
 	
-	private String[] split(String info){
-		return info.split("-");
+	private class ownerListListener implements ListSelectionListener{
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			 if (e.getValueIsAdjusting() == false) {
+				 
+		            if (ownersList.getSelectedIndex() == -1) {
+		            //No selection, empty user information.
+		                setUserInfo(2);		 
+		            } else {
+		            //Selection, show info for selected user.
+		            	System.out.println(owners.get(ownersList.getSelectedIndex())[1]);
+		            	setUserInfo(ownersList.getSelectedIndex());
+		            }
+		        }
+		}		
+	}
+	
+	private String addSeparator(String socSecNum){
+		return socSecNum.substring(0, 8) + "-" + socSecNum.substring(8, socSecNum.length());
 	}
 	
 }
