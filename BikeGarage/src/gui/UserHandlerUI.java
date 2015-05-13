@@ -12,7 +12,7 @@ import javax.swing.event.ListSelectionListener;
 
 public class UserHandlerUI extends JPanel{
 	private BikeGarageGUI main;
-	private Set<String[]> names;
+	private Set<String[]> names = new Set<String[]>();
 	private String[] person;
 	private int currentOwner;
 	
@@ -49,6 +49,7 @@ public class UserHandlerUI extends JPanel{
 	private String[] person2 = {"Ipsum Lores", "19960824-5648", "Ipsum.Lores@domain.se", "Avaktiverad", "56789", "Ute", "98765", "Inne"};
 	private Object[] personer = {person1, person2};
 	
+
 	public UserHandlerUI(BikeGarageGUI main){
 		this.main = main;
 		setLayout(new BorderLayout());
@@ -176,13 +177,17 @@ public class UserHandlerUI extends JPanel{
 		userInfoArea.setText("");
 		userInfoArea.append(String.format("%-20s %s %n", "Namn: ", person[counter++]));
 		userInfoArea.append(String.format("%-20s %s %n", "Personnummer: ", person[counter++]));
-		userInfoArea.append(String.format("%-20s %s %n %n", "Mail: ", person[counter++]));
+		userInfoArea.append(String.format("%-20s %s %n %n %n", "Mail: ", person[counter++]));
 		userInfoArea.append(String.format("%-20s %s %n", "Tillgångstid: ", person[counter++]));
 		
 		bikeListModel.removeAllElements();
 		while(counter+2 <= person.length){
 			bikeListModel.addElement(String.format("%-20s %s", person[counter++], person[counter++]));
 		}
+		
+	}
+	
+	private void setOwners(){
 		
 	}
 
