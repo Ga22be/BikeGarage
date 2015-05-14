@@ -41,6 +41,7 @@ public class RegisterOwnerUI extends JPanel{
 		if(nameField.getText().isEmpty() || mailField.getText().isEmpty()){
 			throw new IllegalArgumentException("Fyll i både namn och mejl");
 		}
+		main.printMessage("Lade till användare med uppgifterna: Personnummer: " + socSecField.getText() + ", Namn: " + nameField.getText() + ", Mail: " + mailField.getText());
 		System.out.println("Personnummer: " + socSecField.getText() + ", Namn: " + nameField.getText() + ", Mail: " + mailField.getText());
 		return true;
 	}

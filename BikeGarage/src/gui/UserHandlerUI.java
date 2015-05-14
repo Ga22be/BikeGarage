@@ -23,7 +23,7 @@ public class UserHandlerUI extends JPanel{
 	private JButton searchButton;
 	private JButton showAllButton;
 	
-	//Users
+	//Owners
 	private JPanel ownersPanel;
 	private JList<String> ownersList;
 	private DefaultListModel<String> ownersListModel;
@@ -43,11 +43,12 @@ public class UserHandlerUI extends JPanel{
 	
 	private JPanel personalButtonPanel;
 	private JButton refreshButton;
+	private JButton printBarcodeButton;
 	private JButton unregiserBikeButton;
 	
 	//TEMP
-	private String[] person1 = {"Ipsum Lores", "199608245648", "Ipsum.Lores@domain.se", "Avaktiverad", "56789", "Ute", "98765", "Inne"};
-	private String[] person2 = {"Lores Ipsum", "199204134423", "Lores.Ipsum@domain.se", "Aktiverad", "12345", "Inne", "54321", "Ute"};
+	private String[] person1 = {"Ipsum Lores", "199608245648", "Ipsum.Lores@domain.se", "1122", "Avaktiverad", "56789", "Ute", "98765", "Inne"};
+	private String[] person2 = {"Lores Ipsum", "199204134423", "Lores.Ipsum@domain.se", "2233", "Aktiverad", "12345", "Inne", "54321", "Ute", "00000", "Ute", "00000", "Ute", "00000", "Ute", "00000", "Ute", "00000", "Ute", "00000", "Ute"};
 	private String[] person3 = {"", "", "", "", "", "", "", ""};
 	private Object[] personer = {person1, person2, person3};
 	
@@ -113,6 +114,7 @@ public class UserHandlerUI extends JPanel{
 		ownersList.setSelectedIndex(0);
 		ownersList.addListSelectionListener(new ownerListListener());
 		ownersList.setFont(BikeGarageGUI.LFONT);
+		ownersList.setVisibleRowCount(18);
 		
 		ownerScroll = new JScrollPane(ownersList);
 		JLabel scrollHeader = new JLabel(String.format("%-20s %s", "Namn", "Personnummer"));
@@ -121,6 +123,13 @@ public class UserHandlerUI extends JPanel{
 		ownerScroll.setColumnHeaderView(scrollHeader);
 		ownerScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		ownersPanel.add(ownerScroll);
+		
+		ownersButtonPanel = new JPanel();
+		unregisterOwnerButton = new JButton("<html><center>Ta bort<br/>Cykelägare</center></html>");
+		unregisterOwnerButton.addActionListener(new UnregisterOwnerListener());
+		unregisterOwnerButton.setEnabled(false);
+		ownersButtonPanel.add(unregisterOwnerButton);
+		ownersPanel.add(ownersButtonPanel);
 			
 	}
 	/**
@@ -135,15 +144,15 @@ public class UserHandlerUI extends JPanel{
 		personalPanel.add(new JLabel("Personinformation"));
 		personalPanel.getComponent(0).setFont(BikeGarageGUI.HFONT);;
 		
-		userInfoArea = new JTextArea(7, 45);
+		userInfoArea = new JTextArea(8, 45);
 		System.out.println(userInfoArea.getFont().getName());
 		System.out.println(userInfoArea.getFont().getStyle());
 		userInfoArea.setFont(BikeGarageGUI.TFONT);
 		userInfoArea.setEditable(false);
 		userScroll = new JScrollPane(userInfoArea);
-		userScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		userScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		personalPanel.add(userScroll);		
-		personalPanel.add(Box.createVerticalStrut(10));
+		personalPanel.add(Box.createVerticalStrut(16));
 		
 		personalPanel.add(new JLabel("CykelID"));
 		personalPanel.getComponent(3).setFont(BikeGarageGUI.HFONT);
@@ -165,13 +174,18 @@ public class UserHandlerUI extends JPanel{
 		bikeScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		personalPanel.add(bikeScroll);
 		
+		//Add buttons
 		personalButtonPanel = new JPanel();
 		refreshButton = new JButton("Uppdatera");
 		refreshButton.addActionListener(new RefreshListener());
+		printBarcodeButton = new JButton("Skriv ut streckkod");
+		printBarcodeButton.addActionListener(new PrintBarcodeListener());
+		printBarcodeButton.setEnabled(false);
 		unregiserBikeButton = new JButton("Avregistrera cykel");
 		unregiserBikeButton.addActionListener(new UnregisterBikeListener());
 		unregiserBikeButton.setEnabled(false);
 		personalButtonPanel.add(refreshButton);
+		personalButtonPanel.add(printBarcodeButton);
 		personalButtonPanel.add(unregiserBikeButton);
 		personalPanel.add(personalButtonPanel);	
 	}
@@ -182,7 +196,8 @@ public class UserHandlerUI extends JPanel{
 		userInfoArea.setText("");
 		userInfoArea.append(String.format("%-20s %s %n", "Namn: ", person[counter++]));
 		userInfoArea.append(String.format("%-20s %s %n", "Personnummer: ", addSeparator(person[counter++])));
-		userInfoArea.append(String.format("%-20s %s %n %n %n", "Mail: ", person[counter++]));
+		userInfoArea.append(String.format("%-20s %s %n", "Mail: ", person[counter++]));
+		userInfoArea.append(String.format("%-20s %s %n %n", "Pin: ", person[counter++]));
 		userInfoArea.append(String.format("%-20s %s %n", "Tillgångstid: ", person[counter++]));
 		
 		bikeListModel.removeAllElements();
@@ -213,23 +228,23 @@ public class UserHandlerUI extends JPanel{
 			owners.add(temp);
 			ownersListModel.addElement(String.format("%-20s %s", temp[0], temp[1]));
 		}
-		
+		ownersList.setSelectedIndex(-1);
 	}
 
 	private class bikeListListener implements ListSelectionListener{
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
-			 if (e.getValueIsAdjusting() == false) {
-				 
-		            if (bikeList.getSelectedIndex() == -1) {
-		            //No selection, disable unregister button.
-		                unregiserBikeButton.setEnabled(false);
-		 
-		            } else {
+			if (e.getValueIsAdjusting() == false) {
+				if (bikeList.getSelectedIndex() == -1) {
+					//No selection, disable unregister button.
+					unregiserBikeButton.setEnabled(false);	
+					printBarcodeButton.setEnabled(false);
+				} else {
 		            //Selection, enable the unregister button.
-		                unregiserBikeButton.setEnabled(true);
-		            }
+		            unregiserBikeButton.setEnabled(true);
+		            printBarcodeButton.setEnabled(true);
 		        }
+		    }
 		}		
 	}
 
@@ -237,6 +252,18 @@ public class UserHandlerUI extends JPanel{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			//TODO Add connection to DB
+			String query = searchField.getText();
+			if(query.isEmpty() || (query.matches("[0-9]+") && (query.length() == 5 || query.length() == 12))){ 
+				if(query.length() == 5){
+					main.printMessage("Sökte efter cykelID: " + query);					
+				} else {
+					main.printMessage("Sökte efter personnummer: " + query);
+				}
+				//TODO Add connection to DB
+			} else {
+				main.printErrorMessage("Felaktig inmatning. Vänligen ange antingen ett cykelID eller ett personnummer och försök igen");
+			}
+			
 		}		
 	}
 	
@@ -254,35 +281,61 @@ public class UserHandlerUI extends JPanel{
 		}
 	}
 	
+	private class PrintBarcodeListener implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			int index = bikeList.getSelectedIndex();
+			String bike = person[5+2*index];
+			main.printMessage("Skrev ut streckkod för cykel: " + bike);
+			//TODO Add connection to printer
+		}
+	}
+	
 	
 	private class UnregisterBikeListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			int index = bikeList.getSelectedIndex();
-			String bikeToRemove = person[4+2*index];
-			String socSecNum = person[1];
-			System.out.println(socSecNum + ", " + bikeToRemove);
-			//TODO Add connection to DB
-			//TODO Add get owner again!
-//			setUserInfo(currentUser%2);
+			if(JOptionPane.showConfirmDialog(null, "Är du säker på att du vill avregistrera cykeln?") == JOptionPane.OK_OPTION){
+				int index = bikeList.getSelectedIndex();
+				String bikeToRemove = person[5+2*index];
+				String socSecNum = person[1];
+				main.printMessage("Avregistrerade cykelID: " + bikeToRemove);
+				System.out.println(socSecNum + ", " + bikeToRemove);
+				//TODO Add connection to DB
+				//TODO Get owner again!
+//				setUserInfo(currentUser%2);				
+			}
 		}
 	}
 	
 	private class ownerListListener implements ListSelectionListener{
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
-			 if (e.getValueIsAdjusting() == false) {
-				 
-		            if (ownersList.getSelectedIndex() == -1) {
-		            //No selection, empty user information.
-		                setUserInfo(2);		 
-		            } else {
+			if (e.getValueIsAdjusting() == false) {				 
+				if (ownersList.getSelectedIndex() == -1) {
+					//No selection, empty user information.
+					unregisterOwnerButton.setEnabled(false);
+					setUserInfo(2);		 
+				} else {
 		            //Selection, show info for selected user.
-		            	System.out.println(owners.get(ownersList.getSelectedIndex())[1]);
-		            	setUserInfo(ownersList.getSelectedIndex());
-		            }
-		        }
+					unregisterOwnerButton.setEnabled(true);
+					System.out.println(owners.get(ownersList.getSelectedIndex())[1]);
+		            setUserInfo(ownersList.getSelectedIndex());
+				}
+			}
 		}		
+	}
+	
+	private class UnregisterOwnerListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			//TODO Add connection to DB
+			if(JOptionPane.showConfirmDialog(null, "Är du säker på att du vill avregistrera denna användare?") == JOptionPane.OK_OPTION){
+				String toRemove = owners.get(ownersList.getSelectedIndex())[1];
+				main.printMessage("Tog bort: " + toRemove);
+//				setOwners();
+			};
+		}
 	}
 	
 	private String addSeparator(String socSecNum){
