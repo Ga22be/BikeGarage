@@ -124,7 +124,7 @@ public class UserHandlerUI extends JPanel{
 		ownerScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		ownersPanel.add(ownerScroll);
 		
-		ownersButtonPanel = new JPanel();
+		ownersButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		unregisterOwnerButton = new JButton("<html><center>Ta bort<br/>Cykelägare</center></html>");
 		unregisterOwnerButton.addActionListener(new UnregisterOwnerListener());
 		unregisterOwnerButton.setEnabled(false);
@@ -175,7 +175,7 @@ public class UserHandlerUI extends JPanel{
 		personalPanel.add(bikeScroll);
 		
 		//Add buttons
-		personalButtonPanel = new JPanel();
+		personalButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		refreshButton = new JButton("Uppdatera");
 		refreshButton.addActionListener(new RefreshListener());
 		printBarcodeButton = new JButton("Skriv ut streckkod");
