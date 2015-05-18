@@ -5,11 +5,7 @@ import gui.buttons.UnregisterBikeButton;
 import gui.buttons.UnregisterOwnerButton;
 import gui.buttons.UserHandlerButton;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import java.awt.*;
 
 import javax.swing.*;
 
@@ -20,6 +16,7 @@ public class MainMenu extends JPanel {
 	public MainMenu(BikeGarageGUI main){
 		this.main = main;
 		setLayout(new GridLayout(3,3));
+		
 		
 		centerPanel = new JPanel();
 //		centerPanel.setBackground(Color.RED); // DEBUG SETTING
