@@ -218,6 +218,7 @@ public class UserHandlerUI extends JPanel{
 		
 		
 		ownersListModel.removeAllElements();
+		owners.clear();
 		Iterator<String> itr = names.iterator();
 		while(itr.hasNext()){
 			String[] temp = itr.next().split("-");
