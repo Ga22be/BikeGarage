@@ -4,21 +4,26 @@ import gui.buttons.BackButton;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.sql.DatabaseMetaData;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.*;
 
+import bikeGarageDatabase.DataBase;
+import bikeGarageDatabase.UnavailableOperationException;
+
 public class RegisterOwnerUI extends JPanel{
 	private BikeGarageGUI main;
-//	private DataBase db;
+	private DataBase db;
 	
 	private JTextField socSecField;
 	private JTextField nameField; 
 	private JTextField mailField; 
 		
-	public RegisterOwnerUI(BikeGarageGUI main, String socSecNum){
+	public RegisterOwnerUI(BikeGarageGUI main, String socSecNum, DataBase db){
 		this.main = main;
+		this.db = db;
 //		setBackground(Color.PINK);
 		
 		socSecField = new JTextField(socSecNum);
@@ -37,14 +42,26 @@ public class RegisterOwnerUI extends JPanel{
 	    add(mailField);	    
 	}
 	
-	//TODO Add connector to DB
 	public boolean addInDatabase(){
 		if(nameField.getText().isEmpty() || mailField.getText().isEmpty()){
-			throw new IllegalArgumentException("Fyll i både namn och mejl");
+			return false;
 		}
-		main.printMessage("Lade till användare med uppgifterna: Personnummer: " + socSecField.getText() + ", Namn: " + nameField.getText() + ", Mail: " + mailField.getText());
-		JOptionPane.showMessageDialog(null, "\"new PIN\"");
-//		JOptionPane.showMessageDialog(null, "Den nya användarens PIN är: " + db.getOwner(socSecNum)[3]);
+		String name = nameField.getText();
+		String socSecNum = socSecField.getText();
+		String mail = mailField.getText();
+		main.printMessage("Lade till användare med uppgifterna: Personnummer: " + socSecNum + ", Namn: " + name + ", Mail: " + mail);
+		//TODO Add connector to DB
+		try {
+			db.addBikeOwner(name, socSecNum, mail);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			main.printErrorMessage("En person med detta personnummer finns redan registrerad");
+		} catch (UnavailableOperationException e) {
+			e.printStackTrace();
+			main.printErrorMessage("Garagets totala kapacitet är uppnådd");
+		}
+//		JOptionPane.showMessageDialog(null, "\"new PIN\"");
+		JOptionPane.showMessageDialog(null, "Den nya användarens PIN är: " + db.getOwner(socSecNum)[3]);
 		return true;
 	}
 

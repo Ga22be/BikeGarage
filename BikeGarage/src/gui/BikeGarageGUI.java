@@ -11,6 +11,8 @@ import java.awt.Font;
 
 import javax.swing.*;
 
+import bikeGarageDatabase.DataBase;
+
 public class BikeGarageGUI extends JFrame{
 	public static final int WIDTH = 800;
 	public static final int HEIGHT = 600;
@@ -28,7 +30,7 @@ public class BikeGarageGUI extends JFrame{
 	public static final Font TFONT = new Font("Monospaced", Font.BOLD, 16);
 	public static final Font LFONT = new Font(null, Font.BOLD, 16);
 	
-	
+	private DataBase db;
 	private MainMenu menu;
 	private RegisterOwnerUI regOwnerUI;
 	private RegisterBikeUI regBikeUI;
@@ -40,12 +42,14 @@ public class BikeGarageGUI extends JFrame{
 	private JPanel bottomPane;
 	private JTextField infoBox;
 	
-	public BikeGarageGUI(){
+	public BikeGarageGUI(DataBase db){
 		super("BikeGarage");
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setSize(WIDTH, HEIGHT);
 		setResizable(false);		
 		setLayout(new BorderLayout());
+		this.db = db;
+		
 		try {
 //		    UIManager.setLookAndFeel("com.seaglasslookandfeel.SeaGlassLookAndFeel");
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -54,17 +58,17 @@ public class BikeGarageGUI extends JFrame{
 		}
 		
 		
-		menu = new MainMenu(this);
+		uHandler = new UserHandlerUI(this, db);
+		menu = new MainMenu(this, db, uHandler);
 //		regOwnerUI = new RegisterOwnerUI(this);
-		regBikeUI = new RegisterBikeUI(this);
-		uHandler = new UserHandlerUI(this);
+//		regBikeUI = new RegisterBikeUI(this, db);
 		unregOwner = new UnregisterOwner(this);
 		unregBike = new UnregisterBike(this);
 		
 		uiPane = new JPanel(new CardLayout());
 		uiPane.add(menu, MENUPANE);
 //		uiPane.add(regOwnerUI, REGOWNERPANE);
-		uiPane.add(regBikeUI, REGBIKEPANE);
+//		uiPane.add(regBikeUI, REGBIKEPANE);
 		uiPane.add(uHandler, HANDLERPANE);
 		uiPane.add(unregOwner, UNREGOWNERPANE);
 		uiPane.add(unregBike, UNREGBIKEPANE);
