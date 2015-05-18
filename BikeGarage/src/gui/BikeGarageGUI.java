@@ -43,7 +43,6 @@ public class BikeGarageGUI extends JFrame{
 	public BikeGarageGUI(){
 		super("BikeGarage");
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-//		setLocationRelativeTo(null);
 		setSize(WIDTH, HEIGHT);
 		setResizable(false);		
 		setLayout(new BorderLayout());
@@ -86,6 +85,7 @@ public class BikeGarageGUI extends JFrame{
 		
 		((CardLayout)uiPane.getLayout()).show(uiPane, MENUPANE);
 		setVisible(true);
+		setLocationRelativeTo(null);
 	}
 	
 	public JPanel getUIPane(){

@@ -15,6 +15,7 @@ public class UserHandlerUI extends JPanel{
 	private BikeGarageGUI main;
 	private List<String[]> owners;
 	private String[] person;
+//	private DataBase db;
 	private int currentOwner;
 	
 	//Search

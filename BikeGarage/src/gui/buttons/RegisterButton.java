@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 
 public class RegisterButton extends JButton implements ActionListener{
 	private BikeGarageGUI main;
+//	private DataBase db;
 	
 	private String testNum = "1337"; // TEMP TO TEST
 	
@@ -32,6 +33,7 @@ public class RegisterButton extends JButton implements ActionListener{
 		if(socSecNum == null || socSecNum.isEmpty()){
 			// Do nothing
 		} else if(!socSecNum.equals(testNum)){
+			// Owner registration
 			switch (JOptionPane.showConfirmDialog(null, "Är du säker på att du vill registrera en ny användare?")) {
 			case JOptionPane.YES_OPTION:
 				System.out.println("Registrera Användare");
@@ -40,7 +42,6 @@ public class RegisterButton extends JButton implements ActionListener{
 				switch(JOptionPane.showConfirmDialog(null, regOwner, "Indata", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null)){
 				case JOptionPane.OK_OPTION:
 					main.printMessage("Indata bekräftad");
-//					System.out.println("Indata bekräftad");
 					try {
 						regOwner.addInDatabase();
 					} catch (IllegalArgumentException e1) {
@@ -59,6 +60,7 @@ public class RegisterButton extends JButton implements ActionListener{
 			}
 		} else {
 			System.out.println("Registrera Cykel");
+			//TODO Add connection to DB
 			cl.show(main.getUIPane(), BikeGarageGUI.REGBIKEPANE);				
 		}
 	}

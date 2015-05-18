@@ -11,6 +11,7 @@ import javax.swing.*;
 
 public class RegisterOwnerUI extends JPanel{
 	private BikeGarageGUI main;
+//	private DataBase db;
 	
 	private JTextField socSecField;
 	private JTextField nameField; 
@@ -42,7 +43,8 @@ public class RegisterOwnerUI extends JPanel{
 			throw new IllegalArgumentException("Fyll i både namn och mejl");
 		}
 		main.printMessage("Lade till användare med uppgifterna: Personnummer: " + socSecField.getText() + ", Namn: " + nameField.getText() + ", Mail: " + mailField.getText());
-		System.out.println("Personnummer: " + socSecField.getText() + ", Namn: " + nameField.getText() + ", Mail: " + mailField.getText());
+		JOptionPane.showMessageDialog(null, "\"new PIN\"");
+//		JOptionPane.showMessageDialog(null, "Den nya användarens PIN är: " + db.getOwner(socSecNum)[3]);
 		return true;
 	}
 
