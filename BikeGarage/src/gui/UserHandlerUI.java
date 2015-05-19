@@ -11,7 +11,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import testDrivers.BarcodePrinter;
 import bikeGarageDatabase.DataBase;
+import bikeGarageDatabase.UnavailableOperationException;
 
 public class UserHandlerUI extends JPanel {
 	private BikeGarageGUI main;
@@ -19,6 +21,7 @@ public class UserHandlerUI extends JPanel {
 	private String[] person;
 	private DataBase db;
 	private int currentOwner;
+	private BarcodePrinter printer;
 
 	// Search
 	private JPanel searchPanel;
@@ -60,8 +63,9 @@ public class UserHandlerUI extends JPanel {
 	private String[] person3 = { "", "", "", "", "", "", "", "" };
 	private Object[] personer = { person1, person2, person3 };
 
-	public UserHandlerUI(BikeGarageGUI main, DataBase db) {
+	public UserHandlerUI(BikeGarageGUI main, DataBase db, BarcodePrinter printer) {
 		this.main = main;
+		this.printer = printer;
 		setLayout(new BorderLayout());
 		currentOwner = 0;
 		owners = new ArrayList<String[]>();
@@ -76,7 +80,7 @@ public class UserHandlerUI extends JPanel {
 		// Users panel
 		makeOwnersPanel();
 		add(ownersPanel, BorderLayout.CENTER);
-//		setOwners();
+		setOwners();
 
 		// Personal panel
 		makePersonalPanel();
@@ -231,21 +235,15 @@ public class UserHandlerUI extends JPanel {
 	}
 
 	public void setOwners() {
-		// TESTING
-		// Set<String> namesTEMP = new TreeSet<String>(); //Returned from DB
-		// namesTEMP.add("Lores Ipsum-199204134423");
-		// namesTEMP.add("Ipsum Lores-199608245648");
-
 		// TODO Run getNames() in DB
-		Set<String> namesTEMP = db.getNames();
+		Set<String> names = db.getNames();
 
-//		List<String> names = new LinkedList<String>();
-//		names.addAll(namesTEMP);
-
-		if (!namesTEMP.isEmpty()) {
-			ownersListModel.removeAllElements();
-			owners.clear();
-			Iterator<String> itr = namesTEMP.iterator();
+		System.out.println("Är vi här?");
+		System.out.println(names.isEmpty());
+		ownersListModel.removeAllElements();
+		owners.clear();
+		if (!names.isEmpty()) {
+			Iterator<String> itr = names.iterator();
 			while (itr.hasNext()) {
 				String[] temp = itr.next().split("-");
 				for (int i = 0; i < 2; i++) {
@@ -301,7 +299,7 @@ public class UserHandlerUI extends JPanel {
 	private class ShowAllListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Make method for adding all names in database
+			setOwners();
 		}
 	}
 
@@ -318,7 +316,7 @@ public class UserHandlerUI extends JPanel {
 			int index = bikeList.getSelectedIndex();
 			String bike = person[5 + 2 * index];
 			main.printMessage("Skrev ut streckkod för cykel: " + bike);
-			// TODO Add connection to printer
+			printer.printBarcode(bike);
 		}
 	}
 
@@ -332,6 +330,23 @@ public class UserHandlerUI extends JPanel {
 				String socSecNum = person[1];
 				main.printMessage("Avregistrerade cykelID: " + bikeToRemove);
 				System.out.println(socSecNum + ", " + bikeToRemove);
+				try {
+					db.removeBike(socSecNum, bikeToRemove);
+				} catch (NoSuchElementException e1) {
+					// If nonexisting
+					main.printErrorMessage("No such what?");
+					e1.printStackTrace();
+				} catch (UnavailableOperationException e1) {
+					// Om cykel i garage
+					main.printErrorMessage("Vänligen checka ut cykel ur garaget innan den kan avregistreras.");
+					e1.printStackTrace();
+				}
+				try {
+					person = db.getOwner(socSecNum);
+					setUserInfo(currentOwner);
+				} catch (NoSuchElementException e2) {
+					setOwners();
+				}
 				// TODO Add connection to DB
 				// TODO Get owner again!
 				// setUserInfo(currentUser%2);
@@ -346,13 +361,14 @@ public class UserHandlerUI extends JPanel {
 				if (ownersList.getSelectedIndex() == -1) {
 					// No selection, empty user information.
 					unregisterOwnerButton.setEnabled(false);
-//					setUserInfo(2);
+					// setUserInfo(2);
 				} else {
 					// Selection, show info for selected user.
 					unregisterOwnerButton.setEnabled(true);
 					System.out
 							.println(owners.get(ownersList.getSelectedIndex())[1]);
-					setUserInfo(ownersList.getSelectedIndex());
+					currentOwner = ownersList.getSelectedIndex();
+					setUserInfo(currentOwner);
 				}
 			}
 		}

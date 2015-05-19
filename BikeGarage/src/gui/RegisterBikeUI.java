@@ -47,25 +47,30 @@ public class RegisterBikeUI extends JPanel {
 
 	public boolean addInDatabase() {
 		String amount = bikeAmount.getText();
-		if (!amount.isEmpty() && amount.equals("0") && amount.matches("[0-9]+")
+		int parsedAmount = Integer.parseInt(amount);
+		if (!amount.isEmpty() && !amount.equals("0") && amount.matches("[0-9]+")
 				&& amount.length() >= 1 && amount.length() < 3) {
-			try {
-				for (int i = 0; i < Integer.parseInt(amount); i++) {
-					db.addBike(socSecNum);
+			if(parsedAmount + db.bikeCount() <= 500){				
+				try {
+					for (int i = 0; i < parsedAmount; i++) {
+						db.addBike(socSecNum);
+					}
+				} catch (NoSuchElementException e) {
+					// Icke-existerande personnummer
+					main.printErrorMessage("No such what?");
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					// Felaktigt personnummer
+					main.printErrorMessage("Illegal argument exception");
+					e.printStackTrace();
+				} catch (UnavailableOperationException e) {
+					main.printErrorMessage("Garagets totala kapacitet är uppnådd");
+					e.printStackTrace();
 				}
-			} catch (NoSuchElementException e) {
-				// Icke-existerande personnummer
-				main.printErrorMessage("No such what?");
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				// Felaktigt personnummer
-				main.printErrorMessage("Illegal argument exception");
-				e.printStackTrace();
-			} catch (UnavailableOperationException e) {
-				main.printErrorMessage("Garagets totala kapacitet är uppnådd");
-				e.printStackTrace();
+				return true;
+			} else {
+				main.printErrorMessage("Garagets totala kapacitet är uppnådd. Det finns redan: " + db.bikeCount() + "cyklar.");
 			}
-			return true;
 		}
 		return false;
 	}

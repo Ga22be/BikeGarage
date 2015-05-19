@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.swing.*;
 
+import testDrivers.BarcodePrinter;
 import bikeGarageDatabase.DataBase;
 import bikeGarageDatabase.UnavailableOperationException;
 
@@ -42,7 +43,7 @@ public class RegisterOwnerUI extends JPanel{
 	    add(mailField);	    
 	}
 	
-	public boolean addInDatabase(){
+	public boolean addInDatabase(BarcodePrinter printer){
 		if(nameField.getText().isEmpty() || mailField.getText().isEmpty()){
 			return false;
 		}
@@ -51,18 +52,23 @@ public class RegisterOwnerUI extends JPanel{
 		String mail = mailField.getText();
 		main.printMessage("Lade till användare med uppgifterna: Personnummer: " + socSecNum + ", Namn: " + name + ", Mail: " + mail);
 		//TODO Add connector to DB
-		try {
-			db.addBikeOwner(name, socSecNum, mail);
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-			main.printErrorMessage("En person med detta personnummer finns redan registrerad");
-		} catch (UnavailableOperationException e) {
-			e.printStackTrace();
+		if(db.bikeCount() + 1 <= 500){
+			try {
+				db.addBikeOwner(name, socSecNum, mail);
+				printer.printBarcode("" + db.addBike(socSecNum));
+				JOptionPane.showMessageDialog(null, "Den nya användarens PIN är: " + db.getOwner(socSecNum)[3]);
+				return true;
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+				main.printErrorMessage("En person med detta personnummer finns redan registrerad");
+			} catch (UnavailableOperationException e) {
+				e.printStackTrace();
+				main.printErrorMessage("Garagets totala kapacitet är uppnådd");
+			}			
+		} else {
 			main.printErrorMessage("Garagets totala kapacitet är uppnådd");
 		}
-//		JOptionPane.showMessageDialog(null, "\"new PIN\"");
-		JOptionPane.showMessageDialog(null, "Den nya användarens PIN är: " + db.getOwner(socSecNum)[3]);
-		return true;
+		return false;
 	}
 
 }

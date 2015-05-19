@@ -11,6 +11,7 @@ import java.awt.Font;
 
 import javax.swing.*;
 
+import testDrivers.BarcodePrinter;
 import bikeGarageDatabase.DataBase;
 
 public class BikeGarageGUI extends JFrame{
@@ -38,17 +39,20 @@ public class BikeGarageGUI extends JFrame{
 	private UnregisterOwner unregOwner;
 	private UnregisterBike unregBike;
 	
+	private BarcodePrinter printer;
+	
 	private JPanel uiPane; 
 	private JPanel bottomPane;
 	private JTextField infoBox;
 	
-	public BikeGarageGUI(DataBase db){
+	public BikeGarageGUI(DataBase db, BarcodePrinter printer){
 		super("BikeGarage");
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setSize(WIDTH, HEIGHT);
 		setResizable(false);		
 		setLayout(new BorderLayout());
 		this.db = db;
+		this.printer = printer;
 		
 		try {
 //		    UIManager.setLookAndFeel("com.seaglasslookandfeel.SeaGlassLookAndFeel");
@@ -58,8 +62,8 @@ public class BikeGarageGUI extends JFrame{
 		}
 		
 		
-		uHandler = new UserHandlerUI(this, db);
-		menu = new MainMenu(this, db, uHandler);
+		uHandler = new UserHandlerUI(this, db, printer);
+		menu = new MainMenu(this, db, uHandler, printer);
 //		regOwnerUI = new RegisterOwnerUI(this);
 //		regBikeUI = new RegisterBikeUI(this, db);
 		unregOwner = new UnregisterOwner(this);

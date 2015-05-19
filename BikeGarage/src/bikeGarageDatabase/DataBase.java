@@ -9,6 +9,7 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class DataBase {
 	private ArrayList<HashNode> hashTable;
@@ -245,6 +246,9 @@ public class DataBase {
 	 * @return Set<String>
 	 */
 	public Set<String> getNames() {
+		if(bikeIDsInUse.size() == 0) {
+			return new TreeSet<String>();
+		}
 		StringBuilder sb = new StringBuilder();
 		for (int index = 0 ; index <= 10 ; index++) {
 			String s = hashTable.get(index).getNames();

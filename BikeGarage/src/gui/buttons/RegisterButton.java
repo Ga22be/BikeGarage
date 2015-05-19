@@ -14,19 +14,22 @@ import java.util.NoSuchElementException;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
+import testDrivers.BarcodePrinter;
 import bikeGarageDatabase.DataBase;
 import bikeGarageDatabase.UnavailableOperationException;
 
 public class RegisterButton extends JButton implements ActionListener{
 	private BikeGarageGUI main;
 	private DataBase db;
+	private BarcodePrinter printer;
 	
 	private String testNum = "1337"; // TEMP TO TEST
 	
-	public RegisterButton(BikeGarageGUI main, DataBase db){
+	public RegisterButton(BikeGarageGUI main, DataBase db, BarcodePrinter printer){
 		super("Registrera");
 		this.main = main;
 		this.db = db;
+		this.printer = printer;
 		addActionListener(this); 
 		setPreferredSize(new Dimension(BikeGarageGUI.WIDTH / 3 - BikeGarageGUI.VERTICAL_PADDING, BikeGarageGUI.HEIGHT / 3 / 3 - BikeGarageGUI.HORIZONTAL_PADDING));
 		setFont(new Font(getFont().getName(), Font.BOLD, 38));
@@ -40,7 +43,7 @@ public class RegisterButton extends JButton implements ActionListener{
 			// Do nothing
 		} else if((socSecNum.matches("[0-9]+") && socSecNum.length() == 12)){		
 			//TODO Find method for check
-			 if(!socSecNum.equals(testNum)){
+			if(!socSecNum.equals(testNum)){
 				// Owner registration
 				switch (JOptionPane.showConfirmDialog(null, "Är du säker på att du vill registrera en ny användare?")) {
 				case JOptionPane.YES_OPTION:
@@ -50,12 +53,11 @@ public class RegisterButton extends JButton implements ActionListener{
 					switch(JOptionPane.showConfirmDialog(null, regOwner, "Indata", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null)){
 					case JOptionPane.OK_OPTION:
 						main.printMessage("Indata bekräftad");
-						if(!regOwner.addInDatabase()){
+						if(!regOwner.addInDatabase(printer)){
 							main.printErrorMessage("Vänligen fyll i alla personuppgifter och försök igen!");
 							return;
 						} else {
 							//Done
-							//TODO Add print of new bike
 						}
 						break;
 					case JOptionPane.CANCEL_OPTION:

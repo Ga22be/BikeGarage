@@ -9,6 +9,7 @@ import java.awt.*;
 
 import javax.swing.*;
 
+import testDrivers.BarcodePrinter;
 import bikeGarageDatabase.DataBase;
 
 public class MainMenu extends JPanel {
@@ -16,17 +17,19 @@ public class MainMenu extends JPanel {
 	private JPanel centerPanel;
 	private DataBase db;
 	private UserHandlerUI handlerUI;
+	private BarcodePrinter printer;
 	
-	public MainMenu(BikeGarageGUI main, DataBase db, UserHandlerUI handlerUI){
+	public MainMenu(BikeGarageGUI main, DataBase db, UserHandlerUI handlerUI, BarcodePrinter printer){
 		this.main = main;
 		setLayout(new GridLayout(3,3));
 		this.db = db;
 		this.handlerUI = handlerUI;
+		this.printer = printer;
 		
 		centerPanel = new JPanel();
 //		centerPanel.setBackground(Color.RED); // DEBUG SETTING
 		
-		centerPanel.add(new RegisterButton(main, db));
+		centerPanel.add(new RegisterButton(main, db, printer));
 		centerPanel.add(new UserHandlerButton(main, handlerUI));
 		centerPanel.add(new UnregisterOwnerButton());
 		centerPanel.add(new UnregisterBikeButton());
