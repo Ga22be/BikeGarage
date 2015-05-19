@@ -77,14 +77,14 @@ public class UserHandlerUI extends JPanel {
 		makeSearchPanel();
 		add(searchPanel, BorderLayout.NORTH);
 
+		// Personal panel
+		makePersonalPanel();
+		add(personalPanel, BorderLayout.EAST);
+		
 		// Users panel
 		makeOwnersPanel();
 		add(ownersPanel, BorderLayout.CENTER);
 		setOwners();
-
-		// Personal panel
-		makePersonalPanel();
-		add(personalPanel, BorderLayout.EAST);
 	}
 
 	/**
@@ -255,6 +255,9 @@ public class UserHandlerUI extends JPanel {
 						temp[1]));
 			}
 			ownersList.setSelectedIndex(-1);
+		} else {
+			userInfoArea.setText("");
+			bikeListModel.removeAllElements();
 		}
 	}
 
@@ -306,7 +309,7 @@ public class UserHandlerUI extends JPanel {
 	private class RefreshListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Add connection to DB
+			setUserInfo(currentOwner);
 		}
 	}
 
@@ -380,11 +383,21 @@ public class UserHandlerUI extends JPanel {
 			// TODO Add connection to DB
 			if (JOptionPane.showConfirmDialog(null,
 					"Är du säker på att du vill avregistrera denna användare?") == JOptionPane.OK_OPTION) {
-				String toRemove = owners.get(ownersList.getSelectedIndex())[1];
-				main.printMessage("Tog bort: " + toRemove);
-				// setOwners();
+				String socSecNum = owners.get(ownersList.getSelectedIndex())[1];
+				main.printMessage("Tog bort: " + socSecNum);
+				try {
+					db.removeBikeOwner(socSecNum);
+				} catch (NoSuchElementException e1) {
+					// Nonexisting user
+					main.printErrorMessage("No such what?");
+					e1.printStackTrace();
+				} catch (UnavailableOperationException e1) {
+					// If not all bikes checked out
+					main.printErrorMessage("Vänligen checka ut alla cykelägarens cyklar innan den kan avregistreras.");
+					e1.printStackTrace();
+				}
+				setOwners();
 			}
-			;
 		}
 	}
 

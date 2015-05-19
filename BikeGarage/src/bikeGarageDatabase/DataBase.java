@@ -167,6 +167,7 @@ public class DataBase {
 		bikeIDsInUse.add(bikeID);
 		List<Bike> bikes = owner.getBikes();
 		bikes.add(new Bike(bikeID));
+		System.out.println("Cyklar för användare: " + bikes.size());
 		return bikeID;
 	}
 	
