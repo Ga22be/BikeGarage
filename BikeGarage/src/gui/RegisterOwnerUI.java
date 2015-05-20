@@ -51,7 +51,6 @@ public class RegisterOwnerUI extends JPanel{
 		String socSecNum = socSecField.getText();
 		String mail = mailField.getText();
 		main.printMessage("Lade till användare med uppgifterna: Personnummer: " + socSecNum + ", Namn: " + name + ", Mail: " + mail);
-		//TODO Add connector to DB
 		if(db.bikeCount() + 1 <= 500){
 			try {
 				db.addBikeOwner(name, socSecNum, mail);

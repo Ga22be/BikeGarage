@@ -1,5 +1,8 @@
 package system;
 
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+
 import testDrivers.BarcodePrinter;
 import testDrivers.BarcodePrinterTestDriver;
 import testDrivers.BarcodeReader;
@@ -16,16 +19,31 @@ import gui.MainMenu;
 public class TestMain {
 
 	public static void main(String[] args) {
+		String fileName = "testFile";
 		
+		DataBase db;
+		
+		try {
+			ObjectInputStream in = new ObjectInputStream(new FileInputStream(
+					fileName));
+			db = (DataBase) in.readObject();
+		} catch (Exception e) {
+			db = new DataBase(fileName);
+		}
+		
+		IdentificationService manager = new IdentificationService(db);
 		BarcodePrinter printer = new BarcodePrinterTestDriver();
-//		BarcodeReader entryReader = new BarcodeReaderEntryTestDriver();
-//		BarcodeReader exitReader = new BarcodeReaderExitTestDriver();
-//		PinCodeTerminal pinTerminal = new PinCodeTerminalTestDriver();
-//		ElectronicLock entryLock = new ElectronicLockTestDriver("Ingång");
-//		ElectronicLock exitLock = new ElectronicLockTestDriver("Utgång");
+		BarcodeReader entryReader = new BarcodeReaderEntryTestDriver();
+		entryReader.register(manager);
+		BarcodeReader exitReader = new BarcodeReaderExitTestDriver();
+		exitReader.register(manager);
+		PinCodeTerminal pinTerminal = new PinCodeTerminalTestDriver();
+		pinTerminal.register(manager);
+		ElectronicLock entryLock = new ElectronicLockTestDriver("Ingång");
+		ElectronicLock exitLock = new ElectronicLockTestDriver("Utgång");
+		manager.registerHardwareDrivers(entryLock, exitLock, pinTerminal);
 		
-		DataBase database = new DataBase();
-		BikeGarageGUI menu = new BikeGarageGUI(database, printer);
+		BikeGarageGUI garageGUI = new BikeGarageGUI(db, printer);
 
 	}
 

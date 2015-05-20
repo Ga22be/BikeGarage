@@ -42,8 +42,7 @@ public class RegisterButton extends JButton implements ActionListener{
 		if(socSecNum == null || socSecNum.isEmpty()){
 			// Do nothing
 		} else if((socSecNum.matches("[0-9]+") && socSecNum.length() == 12)){		
-			//TODO Find method for check
-			if(!socSecNum.equals(testNum)){
+			if(!db.isOwner(socSecNum)){
 				// Owner registration
 				switch (JOptionPane.showConfirmDialog(null, "Är du säker på att du vill registrera en ny användare?")) {
 				case JOptionPane.YES_OPTION:
@@ -54,7 +53,7 @@ public class RegisterButton extends JButton implements ActionListener{
 					case JOptionPane.OK_OPTION:
 						main.printMessage("Indata bekräftad");
 						if(!regOwner.addInDatabase(printer)){
-							main.printErrorMessage("Vänligen fyll i alla personuppgifter och försök igen!");
+							main.printErrorMessage("Vänligen fyll i alla personuppgifter och försök igen.");
 							return;
 						} else {
 							//Done
@@ -71,26 +70,10 @@ public class RegisterButton extends JButton implements ActionListener{
 					return;
 				}
 			} else {
-				//TODO Add connection to DB
-				RegisterBikeUI regBike = new RegisterBikeUI(main, db, "199510247712", "Gabriel Sjöberg");
+				String[] user = db.getOwner(socSecNum);
+				RegisterBikeUI regBike = new RegisterBikeUI(main, db, printer, user[1], user[0]);
 				JOptionPane.showConfirmDialog(null, regBike, "Indata", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
-//				String[] user = db.getOwner(socSecNum);
-//				RegisterBikeUI regBike = new RegisterBikeUI(main, db, user[1], user[0]);
-//				try {
-//					db.addBike(socSecNum);
-//				} catch (NoSuchElementException e1) {
-//					//BLI AV MED
-//					main.printErrorMessage("No such what?");
-//					e1.printStackTrace();
-//				} catch (IllegalArgumentException e1) {
-//					//VILL BLI AV MED
-//					main.printErrorMessage("Illegal argument exception");
-//					e1.printStackTrace();
-//				} catch (UnavailableOperationException e1) {
-//					main.printErrorMessage("Garagets totala kapacitet är uppnådd");
-//					e1.printStackTrace();
-//				}
-//			cl.show(main.getUIPane(), BikeGarageGUI.REGBIKEPANE);				
+				regBike.addInDatabase();
 			}
 		} else {
 			main.printErrorMessage("Felaktig inmatning. Vänligen ange ett korrekt personnummer och försök igen");

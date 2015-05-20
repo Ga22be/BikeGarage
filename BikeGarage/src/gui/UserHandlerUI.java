@@ -80,7 +80,7 @@ public class UserHandlerUI extends JPanel {
 		// Personal panel
 		makePersonalPanel();
 		add(personalPanel, BorderLayout.EAST);
-		
+
 		// Users panel
 		makeOwnersPanel();
 		add(ownersPanel, BorderLayout.CENTER);
@@ -118,7 +118,6 @@ public class UserHandlerUI extends JPanel {
 		ownersPanel.setBorder(new EmptyBorder(0, 5, 0, 0));
 
 		// Add ownersList
-		// Kan getNames() ge ett sett av vektorer om två. Namn + personnummer
 		ownersListModel = new DefaultListModel<String>();
 		ownersList = new JList<String>(ownersListModel);
 		ownersList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -128,8 +127,7 @@ public class UserHandlerUI extends JPanel {
 		ownersList.setVisibleRowCount(18);
 
 		ownerScroll = new JScrollPane(ownersList);
-		JLabel scrollHeader = new JLabel(String.format("%-20s %s", "Namn",
-				"Personnummer"));
+		JLabel scrollHeader = new JLabel("Namn");
 		scrollHeader.setFont(new Font(null, Font.BOLD, 18));
 		scrollHeader.setBorder(BorderFactory
 				.createBevelBorder(BevelBorder.RAISED));
@@ -161,9 +159,7 @@ public class UserHandlerUI extends JPanel {
 		personalPanel.getComponent(0).setFont(BikeGarageGUI.HFONT);
 		;
 
-		userInfoArea = new JTextArea(8, 45);
-		System.out.println(userInfoArea.getFont().getName());
-		System.out.println(userInfoArea.getFont().getStyle());
+		userInfoArea = new JTextArea(8, 48);
 		userInfoArea.setFont(BikeGarageGUI.TFONT);
 		userInfoArea.setEditable(false);
 		userScroll = new JScrollPane(userInfoArea);
@@ -198,6 +194,7 @@ public class UserHandlerUI extends JPanel {
 		personalButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		refreshButton = new JButton("Uppdatera");
 		refreshButton.addActionListener(new RefreshListener());
+		refreshButton.setEnabled(false);
 		printBarcodeButton = new JButton("Skriv ut streckkod");
 		printBarcodeButton.addActionListener(new PrintBarcodeListener());
 		printBarcodeButton.setEnabled(false);
@@ -210,9 +207,47 @@ public class UserHandlerUI extends JPanel {
 		personalPanel.add(personalButtonPanel);
 	}
 
+	public void setOwners(){
+		setOwners(null, 0);
+	}
+	
+	private boolean setOwners(String socSecNum, int variant) {
+		clearUserInfo();
+		Set<String> names = db.getNames();
+		ownersListModel.removeAllElements();
+		owners.clear();
+		boolean result = false;
+		if (socSecNum == null) {
+			if (!names.isEmpty()) {
+				Iterator<String> itr = names.iterator();
+				while (itr.hasNext()) {
+					String[] temp = itr.next().split("-");
+					owners.add(temp);
+					ownersListModel.addElement(temp[0]);
+					result = true;
+				}
+				ownersList.setSelectedIndex(-1);
+			}
+		} else {
+			try {
+				String[] person = db.getOwner(socSecNum);
+				owners.add(person);
+				ownersListModel.addElement(person[0]);
+				ownersList.setSelectedIndex(0);
+				result = true;
+			} catch (NoSuchElementException e) {
+				if(variant == 0) {
+					main.printErrorMessage("Det finns ingen användare associerad med det angivna personnummret.");					
+				} else {
+					main.printErrorMessage("Det finns ingen användare associerad med det angivna cykelIDt.");
+				}
+			}
+		}
+		return result;
+	}
+
 	private void setUserInfo(int i) {
 		person = db.getOwner(owners.get(i)[1]);
-		System.out.println(person.length);
 		int counter = 0;
 		userInfoArea.setText("");
 		userInfoArea.append(String.format("%-20s %s %n", "Namn: ",
@@ -233,32 +268,10 @@ public class UserHandlerUI extends JPanel {
 		}
 
 	}
-
-	public void setOwners() {
-		// TODO Run getNames() in DB
-		Set<String> names = db.getNames();
-
-		System.out.println("Är vi här?");
-		System.out.println(names.isEmpty());
-		ownersListModel.removeAllElements();
-		owners.clear();
-		if (!names.isEmpty()) {
-			Iterator<String> itr = names.iterator();
-			while (itr.hasNext()) {
-				String[] temp = itr.next().split("-");
-				for (int i = 0; i < 2; i++) {
-					System.out.print(temp[i] + ", ");
-				}
-				System.out.println();
-				owners.add(temp);
-				ownersListModel.addElement(String.format("%-20s %s", temp[0],
-						temp[1]));
-			}
-			ownersList.setSelectedIndex(-1);
-		} else {
-			userInfoArea.setText("");
-			bikeListModel.removeAllElements();
-		}
+	
+	public void clearUserInfo() {
+		userInfoArea.setText("");
+		bikeListModel.removeAllElements();
 	}
 
 	private class bikeListListener implements ListSelectionListener {
@@ -266,11 +279,11 @@ public class UserHandlerUI extends JPanel {
 		public void valueChanged(ListSelectionEvent e) {
 			if (e.getValueIsAdjusting() == false) {
 				if (bikeList.getSelectedIndex() == -1) {
-					// No selection, disable unregister button.
+					// No selection, disable unregister and print button.
 					unregiserBikeButton.setEnabled(false);
 					printBarcodeButton.setEnabled(false);
 				} else {
-					// Selection, enable the unregister button.
+					// Selection, enable the unregister and print button.
 					unregiserBikeButton.setEnabled(true);
 					printBarcodeButton.setEnabled(true);
 				}
@@ -281,17 +294,21 @@ public class UserHandlerUI extends JPanel {
 	private class SearchListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Add connection to DB
 			String query = searchField.getText();
 			if (!query.isEmpty()
 					&& (query.matches("[0-9]+") && (query.length() == 5 || query
 							.length() == 12))) {
 				if (query.length() == 5) {
 					main.printMessage("Sökte efter cykelID: " + query);
+					if(setOwners(query, 1)){
+						setUserInfo(currentOwner);						
+					}
 				} else {
 					main.printMessage("Sökte efter personnummer: " + query);
+					if(setOwners(query, 0)){
+						setUserInfo(currentOwner);						
+					}
 				}
-				// TODO Add connection to DB
 			} else {
 				main.printErrorMessage("Felaktig inmatning. Vänligen ange antingen ett cykelID eller ett personnummer och försök igen");
 			}
@@ -332,7 +349,7 @@ public class UserHandlerUI extends JPanel {
 				String bikeToRemove = person[5 + 2 * index];
 				String socSecNum = person[1];
 				main.printMessage("Avregistrerade cykelID: " + bikeToRemove);
-				System.out.println(socSecNum + ", " + bikeToRemove);
+				// System.out.println(socSecNum + ", " + bikeToRemove);
 				try {
 					db.removeBike(socSecNum, bikeToRemove);
 				} catch (NoSuchElementException e1) {
@@ -350,9 +367,6 @@ public class UserHandlerUI extends JPanel {
 				} catch (NoSuchElementException e2) {
 					setOwners();
 				}
-				// TODO Add connection to DB
-				// TODO Get owner again!
-				// setUserInfo(currentUser%2);
 			}
 		}
 	}
@@ -364,12 +378,11 @@ public class UserHandlerUI extends JPanel {
 				if (ownersList.getSelectedIndex() == -1) {
 					// No selection, empty user information.
 					unregisterOwnerButton.setEnabled(false);
-					// setUserInfo(2);
+					refreshButton.setEnabled(false);
 				} else {
 					// Selection, show info for selected user.
 					unregisterOwnerButton.setEnabled(true);
-					System.out
-							.println(owners.get(ownersList.getSelectedIndex())[1]);
+					refreshButton.setEnabled(true);
 					currentOwner = ownersList.getSelectedIndex();
 					setUserInfo(currentOwner);
 				}
@@ -380,7 +393,6 @@ public class UserHandlerUI extends JPanel {
 	private class UnregisterOwnerListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Add connection to DB
 			if (JOptionPane.showConfirmDialog(null,
 					"Är du säker på att du vill avregistrera denna användare?") == JOptionPane.OK_OPTION) {
 				String socSecNum = owners.get(ownersList.getSelectedIndex())[1];

@@ -1,6 +1,8 @@
 package bikeGarageDatabase;
 
-public class Bike {
+import java.io.Serializable;
+
+public class Bike implements Serializable {
 	private int bikeID;
 	private boolean checkedIn;
 	

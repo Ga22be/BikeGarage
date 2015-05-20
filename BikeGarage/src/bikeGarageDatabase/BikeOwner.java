@@ -1,17 +1,17 @@
 package bikeGarageDatabase;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 
-public class BikeOwner {
+public class BikeOwner implements Serializable {
 	 private String name;
 	 private String pid;
 	 private String email;
 	 private long time;
 	 private List<Bike> bikes;
-	 private Bike currentBike;
 	 private String pin;
 	 	 
 	 /**
@@ -25,7 +25,6 @@ public class BikeOwner {
 		 this.pid = pid;
 		 this.email = email;
 		 this.bikes = new LinkedList<Bike>();
-		 currentBike = null;
 		 time = 0; // undefined and error if one tries to checkOut a bike before checking in atleast one time before.
 		 this.pin = pin;
 	 }
@@ -71,24 +70,6 @@ public class BikeOwner {
 		 return bikes;
 	 }
 	 
-	 /**
-	  * Set quick access to the specified bike.
-	  * @param bike the specified bike.
-	  */
-	 public void setSearchedBike(Bike bike) {
-		 currentBike = bike;
-	 }
-	
-	 /**
-	  * Get the quick access bike.
-	  * @return the Bike-object referenced by the quick access or null.
-	  */
-	 public Bike getSearchedBike() {
-		 Bike b = currentBike;
-		 currentBike = null;
-		 return b;
-	 }
-
 	/**
 	 * Sets the name of the BikeOwner.
 	 * @param name the specified name.
@@ -141,6 +122,15 @@ public class BikeOwner {
 			}
 		}
 		return ownerInfo;
+	}
+	
+	@Override
+	public boolean equals(Object bo) {
+		BikeOwner b = (BikeOwner) bo;
+		if(b.getPID().equals(this.getPID())) { 
+			return true;
+		}
+		return false;
 	}
 	
 	/**

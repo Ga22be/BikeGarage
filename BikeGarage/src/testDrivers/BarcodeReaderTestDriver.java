@@ -6,7 +6,7 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 
-import system.BicycleGarageManager;
+import system.IdentificationService;
 
 import java.awt.BorderLayout;
 import java.awt.event.*;
@@ -22,7 +22,7 @@ abstract public class BarcodeReaderTestDriver implements BarcodeReader, ActionLi
 	
 	private JFrame frame;
 	private JTextField scannedCode;
-	protected BicycleGarageManager manager;
+	protected IdentificationService manager;
 	private JButton scanButton;
 	
 	/**
@@ -31,7 +31,7 @@ abstract public class BarcodeReaderTestDriver implements BarcodeReader, ActionLi
 	* the reader. 
 	* @param manager The bicycle garage manager 
 	*/
-	public void register(BicycleGarageManager manager) {
+	public void register(IdentificationService manager) {
 		this.manager = manager;
 	}
 	
