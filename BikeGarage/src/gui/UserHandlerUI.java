@@ -211,6 +211,11 @@ public class UserHandlerUI extends JPanel {
 		setOwners(null, 0);
 	}
 	
+	private String addSeparator(String socSecNum) {
+		return socSecNum.substring(0, 8) + "-"
+				+ socSecNum.substring(8, socSecNum.length());
+	}
+	
 	private boolean setOwners(String socSecNum, int variant) {
 		clearUserInfo();
 		Set<String> names = db.getNames();
@@ -355,11 +360,12 @@ public class UserHandlerUI extends JPanel {
 				} catch (NoSuchElementException e1) {
 					// If nonexisting
 					main.printErrorMessage("No such what?");
-					e1.printStackTrace();
+//					e1.printStackTrace();
 				} catch (UnavailableOperationException e1) {
 					// Om cykel i garage
+					//TODO THIS DOES NOT HAPPEN
 					main.printErrorMessage("Vänligen checka ut cykel ur garaget innan den kan avregistreras.");
-					e1.printStackTrace();
+//					e1.printStackTrace();
 				}
 				try {
 					person = db.getOwner(socSecNum);
@@ -402,20 +408,15 @@ public class UserHandlerUI extends JPanel {
 				} catch (NoSuchElementException e1) {
 					// Nonexisting user
 					main.printErrorMessage("No such what?");
-					e1.printStackTrace();
+//					e1.printStackTrace();
 				} catch (UnavailableOperationException e1) {
 					// If not all bikes checked out
 					main.printErrorMessage("Vänligen checka ut alla cykelägarens cyklar innan den kan avregistreras.");
-					e1.printStackTrace();
+//					e1.printStackTrace();
 				}
 				setOwners();
 			}
 		}
-	}
-
-	private String addSeparator(String socSecNum) {
-		return socSecNum.substring(0, 8) + "-"
-				+ socSecNum.substring(8, socSecNum.length());
 	}
 
 }

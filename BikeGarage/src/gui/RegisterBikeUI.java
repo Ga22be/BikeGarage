@@ -66,14 +66,14 @@ public class RegisterBikeUI extends JPanel {
 				} catch (NoSuchElementException e) {
 					// Icke-existerande personnummer
 					main.printErrorMessage("No such what?");
-					e.printStackTrace();
+//					e.printStackTrace();
 				} catch (IllegalArgumentException e) {
 					// Felaktigt personnummer
 					main.printErrorMessage("Illegal argument exception");
-					e.printStackTrace();
+//					e.printStackTrace();
 				} catch (UnavailableOperationException e) {
 					main.printErrorMessage("Garagets totala kapacitet är uppnådd");
-					e.printStackTrace();
+//					e.printStackTrace();
 				}
 				return true;
 			} else {

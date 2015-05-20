@@ -58,10 +58,10 @@ public class RegisterOwnerUI extends JPanel{
 				JOptionPane.showMessageDialog(null, "Den nya användarens PIN är: " + db.getOwner(socSecNum)[3]);
 				return true;
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
 				main.printErrorMessage("En person med detta personnummer finns redan registrerad");
+//				e.printStackTrace();
 			} catch (UnavailableOperationException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
 				main.printErrorMessage("Garagets totala kapacitet är uppnådd");
 			}			
 		} else {
