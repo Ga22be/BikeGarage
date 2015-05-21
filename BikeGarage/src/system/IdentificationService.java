@@ -65,9 +65,9 @@ public class IdentificationService {
 	 */
 	public void entryCharacter(char c) {
 		long tempTime = System.currentTimeMillis();
-		System.out.println(db.bikeCount());
-		// Reset, new PIN
+//		System.out.println(db.bikeCount());
 		if (c == '#') {
+			// Reset, new PIN
 			pin = new StringBuilder();
 			startTime = 0;
 			return;
@@ -77,11 +77,10 @@ public class IdentificationService {
 			return;
 		} else {
 			if (startTime == 0 || tempTime - startTime < 3000) {
-//				pin.append(c);
-				pin.append("" + c);
+				pin.append(c);
 			} else {
 				pin = new StringBuilder();
-				pin.append("" + c);
+				pin.append(c);
 			}
 			startTime = tempTime;
 			if (pin.length() == 4) {
@@ -97,6 +96,6 @@ public class IdentificationService {
 				return;
 			}
 		}
-		System.out.println(pin.toString());
+//		System.out.println(pin.toString());
 	}
 }

@@ -3,6 +3,8 @@ package system;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 
+import javax.swing.JOptionPane;
+
 import testDrivers.BarcodePrinter;
 import testDrivers.BarcodePrinterTestDriver;
 import testDrivers.BarcodeReader;
@@ -19,31 +21,39 @@ import gui.MainMenu;
 public class TestMain {
 
 	public static void main(String[] args) {
-		String fileName = "testFile";
-		
+//		String fileName = "testFile2";
+		String fileName = JOptionPane.showInputDialog(null, "Vilken sparfil vill du öppna?");
 		DataBase db;
 		
-		try {
-			ObjectInputStream in = new ObjectInputStream(new FileInputStream(
-					fileName));
-			db = (DataBase) in.readObject();
-		} catch (Exception e) {
-			db = new DataBase(fileName);
+		if(fileName != null){
+			try {
+				ObjectInputStream in = new ObjectInputStream(new FileInputStream(
+						fileName));
+				db = (DataBase) in.readObject();
+			} catch (Exception e) {
+				db = new DataBase(fileName);
+			}			
+			
+			IdentificationService manager = new IdentificationService(db);
+			BarcodePrinter printer = new BarcodePrinterTestDriver();
+			BarcodeReader entryReader = new BarcodeReaderEntryTestDriver();
+			entryReader.register(manager);
+			BarcodeReader exitReader = new BarcodeReaderExitTestDriver();
+			exitReader.register(manager);
+			PinCodeTerminal pinTerminal = new PinCodeTerminalTestDriver();
+			pinTerminal.register(manager);
+			ElectronicLock entryLock = new ElectronicLockTestDriver("Ingång");
+			ElectronicLock exitLock = new ElectronicLockTestDriver("Utgång");
+			manager.registerHardwareDrivers(entryLock, exitLock, pinTerminal);
+			
+			BikeGarageGUI garageGUI = new BikeGarageGUI(db, printer);
+			
+		} else {
+			JOptionPane.showMessageDialog(null, "Vänligen ange ett giltigt filnamn");
+			System.exit(0);
 		}
 		
-		IdentificationService manager = new IdentificationService(db);
-		BarcodePrinter printer = new BarcodePrinterTestDriver();
-		BarcodeReader entryReader = new BarcodeReaderEntryTestDriver();
-		entryReader.register(manager);
-		BarcodeReader exitReader = new BarcodeReaderExitTestDriver();
-		exitReader.register(manager);
-		PinCodeTerminal pinTerminal = new PinCodeTerminalTestDriver();
-		pinTerminal.register(manager);
-		ElectronicLock entryLock = new ElectronicLockTestDriver("Ingång");
-		ElectronicLock exitLock = new ElectronicLockTestDriver("Utgång");
-		manager.registerHardwareDrivers(entryLock, exitLock, pinTerminal);
 		
-		BikeGarageGUI garageGUI = new BikeGarageGUI(db, printer);
 
 	}
 

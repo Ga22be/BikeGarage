@@ -195,6 +195,15 @@ import java.util.TreeSet;
 		public boolean removeBike(String personID, String bikeID) throws NoSuchElementException, UnavailableOperationException {
 			BikeOwner owner = getBikeOwner(personID);
 			List<Bike> bikes = owner.getBikes();
+			Iterator<Bike> itr = bikes.iterator();
+			while(itr.hasNext()) {
+				Bike b = itr.next();
+				if (("" +b.getID()).equals(bikeID)) {
+					if(b.isCheckedIn()) {
+						throw new UnavailableOperationException();
+					}
+				}
+			}
 			boolean success;
 			if(bikes.size() <= 1) {
 				success = removeBikeOwner(personID);

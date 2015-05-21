@@ -363,7 +363,6 @@ public class UserHandlerUI extends JPanel {
 //					e1.printStackTrace();
 				} catch (UnavailableOperationException e1) {
 					// Om cykel i garage
-					//TODO THIS DOES NOT HAPPEN
 					main.printErrorMessage("Vänligen checka ut cykel ur garaget innan den kan avregistreras.");
 //					e1.printStackTrace();
 				}
