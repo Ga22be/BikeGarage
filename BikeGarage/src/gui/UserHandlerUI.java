@@ -52,17 +52,6 @@ public class UserHandlerUI extends JPanel {
 	private JButton printBarcodeButton;
 	private JButton unregiserBikeButton;
 
-	// TEMP
-	private String[] person1 = { "Ipsum Lores", "199608245648",
-			"Ipsum.Lores@domain.se", "1122", "Avaktiverad", "56789", "Ute",
-			"98765", "Inne" };
-	private String[] person2 = { "Lores Ipsum", "199204134423",
-			"Lores.Ipsum@domain.se", "2233", "Aktiverad", "12345", "Inne",
-			"54321", "Ute", "00000", "Ute", "00000", "Ute", "00000", "Ute",
-			"00000", "Ute", "00000", "Ute", "00000", "Ute" };
-	private String[] person3 = { "", "", "", "", "", "", "", "" };
-	private Object[] personer = { person1, person2, person3 };
-
 	public UserHandlerUI(BikeGarageGUI main, DataBase db, BarcodePrinter printer) {
 		this.main = main;
 		this.printer = printer;
@@ -88,7 +77,8 @@ public class UserHandlerUI extends JPanel {
 	}
 
 	/**
-	 * Skapar panelen innehållande sökrutan och dess knapp
+	 * Creates panel containing the search field, search button and showAll
+	 * button
 	 */
 	private void makeSearchPanel() {
 		searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -110,7 +100,7 @@ public class UserHandlerUI extends JPanel {
 	}
 
 	/**
-	 * Skapar panelen innehållande alla användare;
+	 * Creates panel showing list of users and button for user removal
 	 */
 	private void makeOwnersPanel() {
 		ownersPanel = new JPanel();
@@ -147,7 +137,8 @@ public class UserHandlerUI extends JPanel {
 	}
 
 	/**
-	 * Skapar panelen innnehållande all personlig information
+	 * Creates panel containing information about selected user and some buttons
+	 * to manipulate this user.
 	 */
 	private void makePersonalPanel() {
 		personalPanel = new JPanel();
@@ -207,22 +198,42 @@ public class UserHandlerUI extends JPanel {
 		personalPanel.add(personalButtonPanel);
 	}
 
-	public void setOwners(){
-		setOwners(null, 0);
+	/**
+	 * Shows all users in the database in the list
+	 */
+	public void setOwners() {
+		setOwners(null);
 	}
-	
+
+	/**
+	 * Adds a "-" separator in a 12-digit social security number
+	 * 
+	 * @param socSecNum
+	 *            The number to split
+	 * @return The number with separator
+	 */
 	private String addSeparator(String socSecNum) {
 		return socSecNum.substring(0, 8) + "-"
 				+ socSecNum.substring(8, socSecNum.length());
 	}
-	
-	private boolean setOwners(String socSecNum, int variant) {
+
+	/**
+	 * Shows users in the owners list depending on the arguments
+	 * 
+	 * @param id
+	 *            If only one person is to be shown, what's their social
+	 *            security number or a bike they are registered with. If all
+	 *            users are supposed to be showed, set as null.
+	 * @return true if an owner was successfully added in the database,
+	 *         otherwise false.
+	 */
+	private boolean setOwners(String id) {
 		clearUserInfo();
-		Set<String> names = db.getNames();
 		ownersListModel.removeAllElements();
 		owners.clear();
 		boolean result = false;
-		if (socSecNum == null) {
+		if (id == null) {
+			Set<String> names = db.getNames();
 			if (!names.isEmpty()) {
 				Iterator<String> itr = names.iterator();
 				while (itr.hasNext()) {
@@ -235,14 +246,14 @@ public class UserHandlerUI extends JPanel {
 			}
 		} else {
 			try {
-				String[] person = db.getOwner(socSecNum);
+				String[] person = db.getOwner(id);
 				owners.add(person);
 				ownersListModel.addElement(person[0]);
 				ownersList.setSelectedIndex(0);
 				result = true;
 			} catch (NoSuchElementException e) {
-				if(variant == 0) {
-					main.printErrorMessage("Det finns ingen användare associerad med det angivna personnummret.");					
+				if (id.length() == 12) {
+					main.printErrorMessage("Det finns ingen användare associerad med det angivna personnummret.");
 				} else {
 					main.printErrorMessage("Det finns ingen användare associerad med det angivna cykelIDt.");
 				}
@@ -251,6 +262,12 @@ public class UserHandlerUI extends JPanel {
 		return result;
 	}
 
+	/**
+	 * Sets the information in the inforamtion fields
+	 * 
+	 * @param i
+	 *            The index of the owner in the internal list to be shown
+	 */
 	private void setUserInfo(int i) {
 		person = db.getOwner(owners.get(i)[1]);
 		int counter = 0;
@@ -273,12 +290,21 @@ public class UserHandlerUI extends JPanel {
 		}
 
 	}
-	
-	public void clearUserInfo() {
+
+	/**
+	 * Clears the information fields
+	 */
+	private void clearUserInfo() {
 		userInfoArea.setText("");
 		bikeListModel.removeAllElements();
 	}
 
+	/**
+	 * Listener for the bikeList
+	 * 
+	 * @author Gabbe
+	 * 
+	 */
 	private class bikeListListener implements ListSelectionListener {
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
@@ -296,6 +322,12 @@ public class UserHandlerUI extends JPanel {
 		}
 	}
 
+	/**
+	 * Listener for the search button
+	 * 
+	 * @author Gabbe
+	 *
+	 */
 	private class SearchListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -305,13 +337,13 @@ public class UserHandlerUI extends JPanel {
 							.length() == 12))) {
 				if (query.length() == 5) {
 					main.printMessage("Sökte efter cykelID: " + query);
-					if(setOwners(query, 1)){
-						setUserInfo(currentOwner);						
+					if (setOwners(query)) {
+						setUserInfo(currentOwner);
 					}
 				} else {
 					main.printMessage("Sökte efter personnummer: " + query);
-					if(setOwners(query, 0)){
-						setUserInfo(currentOwner);						
+					if (setOwners(query)) {
+						setUserInfo(currentOwner);
 					}
 				}
 			} else {
@@ -321,6 +353,12 @@ public class UserHandlerUI extends JPanel {
 		}
 	}
 
+	/**
+	 * Listener for the showAll button
+	 * 
+	 * @author Gabbe
+	 *
+	 */
 	private class ShowAllListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -328,6 +366,12 @@ public class UserHandlerUI extends JPanel {
 		}
 	}
 
+	/**
+	 * Listener for the refreshButton
+	 * 
+	 * @author Gabbe
+	 *
+	 */
 	private class RefreshListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -335,6 +379,12 @@ public class UserHandlerUI extends JPanel {
 		}
 	}
 
+	/**
+	 * Listener for the printBarcode button
+	 * 
+	 * @author Gabbe
+	 *
+	 */
 	private class PrintBarcodeListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -345,6 +395,12 @@ public class UserHandlerUI extends JPanel {
 		}
 	}
 
+	/**
+	 * Listener for the unregisterBike button
+	 * 
+	 * @author Gabbe
+	 *
+	 */
 	private class UnregisterBikeListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -360,11 +416,11 @@ public class UserHandlerUI extends JPanel {
 				} catch (NoSuchElementException e1) {
 					// If nonexisting
 					main.printErrorMessage("No such what?");
-//					e1.printStackTrace();
+					// e1.printStackTrace();
 				} catch (UnavailableOperationException e1) {
 					// Om cykel i garage
 					main.printErrorMessage("Vänligen checka ut cykel ur garaget innan den kan avregistreras.");
-//					e1.printStackTrace();
+					// e1.printStackTrace();
 				}
 				try {
 					person = db.getOwner(socSecNum);
@@ -376,6 +432,12 @@ public class UserHandlerUI extends JPanel {
 		}
 	}
 
+	/**
+	 * Listener for the ownersList
+	 * 
+	 * @author Gabbe
+	 *
+	 */
 	private class ownerListListener implements ListSelectionListener {
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
@@ -395,6 +457,12 @@ public class UserHandlerUI extends JPanel {
 		}
 	}
 
+	/**
+	 * Listener for the unregisterOwner button
+	 * 
+	 * @author Gabbe
+	 *
+	 */
 	private class UnregisterOwnerListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -407,11 +475,11 @@ public class UserHandlerUI extends JPanel {
 				} catch (NoSuchElementException e1) {
 					// Nonexisting user
 					main.printErrorMessage("No such what?");
-//					e1.printStackTrace();
+					// e1.printStackTrace();
 				} catch (UnavailableOperationException e1) {
 					// If not all bikes checked out
 					main.printErrorMessage("Vänligen checka ut alla cykelägarens cyklar innan den kan avregistreras.");
-//					e1.printStackTrace();
+					// e1.printStackTrace();
 				}
 				setOwners();
 			}

@@ -11,6 +11,7 @@ import javax.swing.JButton;
 
 public class UnregisterBikeButton extends JButton implements ActionListener{
 	
+	//UNUSED CLASS
 	public UnregisterBikeButton(){
 		super("<html><center> Avregistrera<br/>Cykel </center></html>");
 		addActionListener(this);

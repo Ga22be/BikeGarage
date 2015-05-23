@@ -11,6 +11,7 @@ import javax.swing.JButton;
 
 public class UnregisterOwnerButton extends JButton implements ActionListener{
 	
+	//UNUSED CLASS
 	public UnregisterOwnerButton(){
 		super("<html><center> Avregistrera<br/>Användare </center></html>");
 		addActionListener(this);
