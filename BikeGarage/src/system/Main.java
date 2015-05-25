@@ -18,14 +18,15 @@ import bikeGarageDatabase.DataBase;
 import gui.BikeGarageGUI;
 import gui.MainMenu;
 
-public class TestMain {
+public class Main {
 
 	public static void main(String[] args) {
 //		String fileName = "testFile2";
 		String fileName = JOptionPane.showInputDialog(null, "Vilken sparfil vill du öppna?");
 		DataBase db;
-		
-		if(fileName != null){
+		if(fileName == null){
+			
+		} else if (!fileName.isEmpty()){
 			try {
 				ObjectInputStream in = new ObjectInputStream(new FileInputStream(
 						fileName));

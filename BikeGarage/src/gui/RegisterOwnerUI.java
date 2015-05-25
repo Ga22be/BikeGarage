@@ -81,7 +81,7 @@ public class RegisterOwnerUI extends JPanel {
 		} else {
 			main.printErrorMessage("Garagets totala kapacitet är uppnådd");
 		}
-		return false;
+		return true;
 	}
 
 }
