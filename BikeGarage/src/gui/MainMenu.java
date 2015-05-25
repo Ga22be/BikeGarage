@@ -1,8 +1,6 @@
 package gui;
 
 import gui.buttons.RegisterButton;
-import gui.buttons.UnregisterBikeButton;
-import gui.buttons.UnregisterOwnerButton;
 import gui.buttons.UserHandlerButton;
 
 import java.awt.*;
@@ -43,8 +41,6 @@ public class MainMenu extends JPanel {
 
 		centerPanel.add(new RegisterButton(main, db, printer));
 		centerPanel.add(new UserHandlerButton(main, handlerUI));
-		centerPanel.add(new UnregisterOwnerButton());
-		centerPanel.add(new UnregisterBikeButton());
 
 		for (int i = 0; i < 4; i++) {
 			add(new JPanel());

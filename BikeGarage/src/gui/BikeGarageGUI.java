@@ -16,8 +16,8 @@ import bikeGarageDatabase.DataBase;
 public class BikeGarageGUI extends JFrame {
 	public static final int WIDTH = 800;
 	public static final int HEIGHT = 600;
-	public static final int VERTICAL_PADDING = 6;
 	public static final int HORIZONTAL_PADDING = 12;
+	public static final int VERTICAL_PADDING = 20;
 
 	public static final String MENUPANE = "menu";
 	public static final String REGOWNERPANE = "registerOwner";

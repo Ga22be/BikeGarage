@@ -38,8 +38,8 @@ public class RegisterButton extends JButton implements ActionListener {
 		this.printer = printer;
 		addActionListener(this);
 		setPreferredSize(new Dimension(BikeGarageGUI.WIDTH / 3
-				- BikeGarageGUI.VERTICAL_PADDING, BikeGarageGUI.HEIGHT / 3 / 3
-				- BikeGarageGUI.HORIZONTAL_PADDING));
+				- BikeGarageGUI.HORIZONTAL_PADDING, BikeGarageGUI.HEIGHT / 3 / 2
+				- BikeGarageGUI.VERTICAL_PADDING));
 		setFont(new Font(getFont().getName(), Font.BOLD, 38));
 	}
 
@@ -62,8 +62,6 @@ public class RegisterButton extends JButton implements ActionListener {
 						.showConfirmDialog(null,
 								"Är du säker på att du vill registrera en ny användare?")) {
 				case JOptionPane.YES_OPTION:
-					System.out.println("Registrera Användare");
-					// cl.show(main.getUIPane(), BikeGarageGUI.REGOWNERPANE);
 					RegisterOwnerUI regOwner = new RegisterOwnerUI(main,
 							socSecNum, db);
 					switch (JOptionPane.showConfirmDialog(null, regOwner,

@@ -28,7 +28,6 @@ public class RegisterOwnerUI extends JPanel {
 	public RegisterOwnerUI(BikeGarageGUI main, String socSecNum, DataBase db) {
 		this.main = main;
 		this.db = db;
-		// setBackground(Color.PINK);
 
 		socSecField = new JTextField(socSecNum);
 		socSecField.setEditable(false);
@@ -73,9 +72,7 @@ public class RegisterOwnerUI extends JPanel {
 				return true;
 			} catch (IllegalArgumentException e) {
 				main.printErrorMessage("En person med detta personnummer finns redan registrerad");
-				// e.printStackTrace();
 			} catch (UnavailableOperationException e) {
-				// e.printStackTrace();
 				main.printErrorMessage("Garagets totala kapacitet är uppnådd");
 			}
 		} else {
